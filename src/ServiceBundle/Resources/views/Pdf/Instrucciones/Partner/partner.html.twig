@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Instrucciones de deposito</title>
+</head>
+
+<body>
+  <TABLE  align="center" style="font-size:16px width="100%" BORDER CELLPADDING=10 CELLSPACING=0>
+    <tr>
+      <td >
+        <div style="font-weight: bold;">HORA<br><br></div>
+      </td>
+      <td >
+        <div style="font-weight: bold;">PARTNER<br><br></div>
+      </td>
+      <td >
+        <div style="font-weight: bold;">T/C<br><br></div>
+      </td>
+      <td >
+        <div style="font-weight: bold;">TOTAL<br><br></div>
+      </td>
+    </tr>
+    {% for det in tabladet %}
+        {% if det.gano|e == 's' %}
+          <tr bgcolor="#d6d6d6">
+        {% else %}
+          <tr>
+        {% endif %}
+        <td>{{ det.fo|e }}</td>
+        <td>{{ det.parner|e }}</td>
+        <td>{{ det.tcofe|e }}</td>
+        <td>{{ det.moneda|e }}&nbsp;&nbsp;{{ det.monto|e }}</td>
+      </tr>
+    {% endfor %}    
+  </table>
+</body>
+</html>

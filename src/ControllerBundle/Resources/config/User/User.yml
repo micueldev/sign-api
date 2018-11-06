@@ -1,0 +1,56 @@
+## --- User Prueba
+user/p:
+    
+  path:         /p
+  defaults  :   { _controller: ControllerBundle:User/User:prueba}
+  methods: [GET,OPTIONS]
+
+
+## --- User Create
+user/c:
+    
+  path:         /c
+  defaults  :   { _controller: ControllerBundle:User/User:create}
+  methods: [POST,OPTIONS]
+
+## --- User Login
+user/login:
+    
+  path:         /login
+  defaults  :   { _controller: ControllerBundle:User/User:login}
+  methods: [POST,OPTIONS]
+
+## --- User Toking
+user/toking:
+    
+  path:         /toking
+  defaults  :   { _controller: ControllerBundle:User/User:toking}
+  methods: [GET,OPTIONS]
+
+# Change New Password
+user/changenewpwd:
+
+  path:         /changenewpwd
+  defaults  :   { _controller: ControllerBundle:User/User:changeNewPassword}
+  methods: [POST,OPTIONS]
+
+# Change Password
+user/changepwd:
+
+  path:         /changepwd
+  defaults  :   { _controller: ControllerBundle:User/User:changePassword}
+  methods: [POST,OPTIONS]
+
+# Recover Password
+user/recoverpwd:
+
+  path:         /recoverpwd
+  defaults  :   { _controller: ControllerBundle:User/User:recoverPassword}
+  methods: [POST,OPTIONS]
+
+# New Password
+user/newpwd:
+
+  path:         /newpwd
+  defaults  :   { _controller: ControllerBundle:User/User:newPassword}
+  methods: [POST,OPTIONS]

@@ -1,0 +1,29 @@
+services:
+    
+
+    ### CRUD ###
+    Create:
+        class : ServiceBundle\Service\CRUD\Create
+        arguments: ['@doctrine.orm.entity_manager']
+
+    Read:
+        class : ServiceBundle\Service\CRUD\Read
+        arguments: ['@doctrine.orm.entity_manager']
+
+    Update:
+        class : ServiceBundle\Service\CRUD\Update
+        arguments: ['@doctrine.orm.entity_manager']
+        
+    Delete:
+        class : ServiceBundle\Service\CRUD\Delete
+        arguments: ['@doctrine.orm.entity_manager']
+
+
+    ### Util ###
+    Jwt:
+        class : ServiceBundle\Service\Util\Jwt
+        arguments: ['@doctrine.orm.entity_manager']
+
+    Util:
+        class : ServiceBundle\Service\Util\Util
+        arguments: ['@doctrine.orm.entity_manager']

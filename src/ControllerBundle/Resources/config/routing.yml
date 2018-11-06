@@ -1,0 +1,4 @@
+# --- User
+User:
+    resource: "@ControllerBundle/Resources/config/User/User.yml"
+    prefix:   /user/

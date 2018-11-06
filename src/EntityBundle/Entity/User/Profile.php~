@@ -1,0 +1,59 @@
+<?php
+
+namespace EntityBundle\Entity\User;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Profile
+ * @ORM\Entity
+ * @ORM\Table(name="User_Profile")
+ */
+class Profile
+{   
+    /**
+     * @ORM\OneToOne(targetEntity="EntityBundle\Entity\User\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @ORM\Id
+     */
+    private $user;
+
+    /**
+     * @ORM\Column(type="string", length=120)
+     */
+    private $apepat;
+
+    /**
+     * @ORM\Column(type="string", length=120, nullable=true)
+     */
+    private $apemat;
+
+    /**
+     * @ORM\Column(type="string", length=120)
+     */
+    private $nombres;
+
+    /**
+     * @ORM\Column(type="string", length=100, unique=true, nullable=true)
+     */
+    private $email;
+
+
+    public function asArray($filtro=NULL){
+
+        $response = [
+            'apepat' => $this->apepat,
+            'apemat' => $this->apemat,
+            'nombres' => $this->nombres,
+            'email' => $this->email
+        ];
+
+        if($filtro){
+            $response = array_intersect_key($response, array_flip($filtro));
+        }
+
+        return $response;
+    }
+ }
