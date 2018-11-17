@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use ServiceBundle\Service\Util\Constante;
 
-class UserController extends Controller
+class AccountController extends Controller
 {   
     public function pruebaAction(Request $request) {
         return  $this->json(['success'=>true,'user'=>['username'=>'mcueva','password'=>'mcueva']]);
@@ -117,7 +117,7 @@ class UserController extends Controller
     public function tokingAction(Request $request)
     {   
         try{        
-            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'),'a');
+            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'));
             if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
             $user = $decoded['user'];
 

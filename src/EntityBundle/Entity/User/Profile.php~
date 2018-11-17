@@ -56,4 +56,124 @@ class Profile
 
         return $response;
     }
- }
+ 
+    /**
+     * Set apepat
+     *
+     * @param string $apepat
+     *
+     * @return Profile
+     */
+    public function setApepat($apepat)
+    {
+        $this->apepat = $apepat;
+
+        return $this;
+    }
+
+    /**
+     * Get apepat
+     *
+     * @return string
+     */
+    public function getApepat()
+    {
+        return $this->apepat;
+    }
+
+    /**
+     * Set apemat
+     *
+     * @param string $apemat
+     *
+     * @return Profile
+     */
+    public function setApemat($apemat)
+    {
+        $this->apemat = $apemat;
+
+        return $this;
+    }
+
+    /**
+     * Get apemat
+     *
+     * @return string
+     */
+    public function getApemat()
+    {
+        return $this->apemat;
+    }
+
+    /**
+     * Set nombres
+     *
+     * @param string $nombres
+     *
+     * @return Profile
+     */
+    public function setNombres($nombres)
+    {
+        $this->nombres = $nombres;
+
+        return $this;
+    }
+
+    /**
+     * Get nombres
+     *
+     * @return string
+     */
+    public function getNombres()
+    {
+        return $this->nombres;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Profile
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \EntityBundle\Entity\User\User $user
+     *
+     * @return Profile
+     */
+    public function setUser(\EntityBundle\Entity\User\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \EntityBundle\Entity\User\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

@@ -1,0 +1,34 @@
+## --- User Contact List
+user/contact/l:
+
+  path:         /l
+  defaults  :   { _controller: ControllerBundle:User/Contact:list}
+  methods: [GET,OPTIONS]
+
+## --- User Contact Read
+user/contact/r:
+
+  path:         /r/{id}
+  defaults  :   { _controller: ControllerBundle:User/Contact:read, id:null}
+  methods: [GET,OPTIONS]
+
+## --- User Contact Create
+user/contact/c:
+
+  path:         /c
+  defaults  :   { _controller: ControllerBundle:User/Contact:create}
+  methods: [POST,OPTIONS]
+
+## --- User Contact Update
+user/contact/u:
+    
+  path:         /u/{id}
+  defaults  :   { _controller: ControllerBundle:User/Contact:update, id:null}
+  methods: [PUT,OPTIONS]
+
+## --- User Contact Delete
+user/contact/d:
+    
+  path:         /d/{id}
+  defaults  :   { _controller: ControllerBundle:User/Contact:delete, id:null}
+  methods: [DELETE,OPTIONS]
