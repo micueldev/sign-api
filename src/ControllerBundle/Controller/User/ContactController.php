@@ -83,7 +83,7 @@ class ContactController extends Controller
             $begin;
             $this->getDoctrine()->getConnection()->beginTransaction();
 
-            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 
+            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId());
             if(!$contacts){
                 $cadena = 'user/User\User^'.$user->getId();
                 $contacts = $this->get('Create')->create('User\Contact',['cadena'=>$cadena]);
@@ -199,7 +199,7 @@ class ContactController extends Controller
                 } else if( $id==$contact['id'] ){
                     $delete=true;
                     unset($aContact[$i]);
-                    //$aContact = array_values($aContact);
+                    $aContact = array_values($aContact);
                 }
                 break;
             }
