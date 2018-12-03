@@ -124,9 +124,9 @@ class AccountController extends Controller
             $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
             return $this->json([
                 'success' => true,
-                //'authToken' => $request->headers->get('authToken'),
+                'authToken' => $this->get('Jwt')->getToken($user,'a'),
                 'profile' => $profile->asArray(FALSE,['apepat','nombres'])
-            ]);            
+            ]);  
             
         }catch (\Exception $e){
             return $this->json([
