@@ -110,7 +110,7 @@ class ContactController extends Controller
             }
 
             $this->getDoctrine()->getConnection()->commit();
-            return  $this->json(['success'=>true]);
+            return  $this->json(['success'=>true,'id'=>$id]);
 
         }catch (\Exception $e){
             if( isset($begin) ){
