@@ -8,14 +8,170 @@ use ServiceBundle\Service\Util\Constante;
 
 class AccountController extends Controller
 {   
-    public function pruebaAction(Request $request) {
-        return  $this->json(['success'=>true,'user'=>['username'=>'mcueva','password'=>'mcueva']]);
+    public function sendSmsAction(Request $request) {
+
+        try{
+            $number = $_GET['number'];
+            $text = $_GET['text'];
+
+            $resp = $this->get('Sms')->send($number,$text);
+
+            return $this->json($resp);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
     }
+
+
+    public function pruebaAction(Request $request) {
+
+        try{
+            return  $this->json(['success'=>true,'user'=>['username'=>'mcueva','password'=>'mcueva']]);
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
+    }
+
+    public function loginAction(Request $request) {
+
+        try{
+            $cadena = 'username,password';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return $this->json([
+                                        'success'=>false,
+                                        'msg'=>'No se encontro al parametro ('.$faltante.')'
+                                        ],Constante::$enumParam);
+            }
+
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
+            if($user && password_verify($password,$user->getPassword()) ){
+                if( $user->getIsActive() ){
+                    $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
+                    return $this->json([
+                        'success' => true,
+                        'authToken' => $this->get('Jwt')->getToken($user,'a'),
+                        'profile' => $profile->asArray(FALSE,['apepat','nombres'])
+                    ]);                    
+                }
+                return $this->json(['success'=>FALSE,'msg'=>'¡Usuario inactivo!'],Constante::$enumTock);                
+            }
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>'¡phone or password incorrect!']);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ],Constante::$enumCodigo);
+        }
+    }
+
+    public function tokingAction(Request $request) {
+
+        try{        
+            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'));
+            if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
+            $user = $decoded['user'];
+
+            $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
+            return $this->json([
+                'success' => true,
+                'authToken' => $this->get('Jwt')->getToken($user,'a'),
+                'profile' => $profile->asArray(FALSE,['apepat','nombres'])
+            ]);  
+            
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ],Constante::$enumCodigo);
+        }
+    }
+
+    public function sendCodeAction(Request $request) {
+
+        try{
+            $cadena = 'username';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'faltan parametros'
+                                        ],Constante::$enumPerm);
+            }
+
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
+            if($user){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Usuario registrado'
+                                        ],Constante::$enumNotExis);
+            }
+
+            $this->get('UserAccount')->sendCode($username);
+            return  $this->json(['success'=>true]);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
+    }
+
+    public function checkCodeAction(Request $request) {
+
+        try{
+            $cadena = 'username,code';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'faltan parametros'
+                                        ],Constante::$enumPerm);
+            }
+
+            $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
+            if(!$uCode){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS invalid'
+                                        ],Constante::$enumNotExis);
+            }
+
+            if( $code!=$uCode->getCode() ){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS incorrect'
+                                        ],Constante::$enumNotExis);
+            }
+            return  $this->json(['success'=>true]);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
+    }
+
 
     public function createAction(Request $request) {
 
         try{           
-            $cadena = 'username,password,email,apepat,apemat,nombres';
+            $cadena = 'username,code,password,email,apepat,apemat,nombres';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
             if(!$existen){
@@ -29,15 +185,31 @@ class AccountController extends Controller
             if($oUser){
                 return  $this->json ([
                                         'success'=>false,
-                                        'msg'=>'El username ya esta siendo usado'
+                                        'msg'=>'El numero de telefono ya esta siendo usado'
                                         ],Constante::$enumNotExis);
             }
+            /*
             $oUser = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByEmail($email);
             if($oUser){
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'El email ya esta siendo usado.'
                                         ],Constante::$enumCodigo);
+            }
+            */
+            $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
+            if(!$uCode){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS invalid'
+                                        ],Constante::$enumNotExis);
+            }
+
+            if( $code!=$uCode->getCode() ){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS incorrect'
+                                        ],Constante::$enumNotExis);
             }
 
             $begin;
@@ -76,67 +248,39 @@ class AccountController extends Controller
         }
     }
 
-
-    public function loginAction(Request $request) {
+    public function sendCodeUserAction(Request $request) {
 
         try{
-            $cadena = 'username,password';
+            $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
             if(!$existen){
-                return $this->json([
+                return  $this->json ([
                                         'success'=>false,
-                                        'msg'=>'No se encontro al parametro ('.$faltante.')'
-                                        ],Constante::$enumParam);
+                                        'msg'=>'faltan parametros'
+                                        ],Constante::$enumPerm);
             }
 
-            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
-            if($user && password_verify($password,$user->getPassword()) ){
-                if( $user->getIsActive() ){
-                    $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
-                    return $this->json([
-                        'success' => true,
-                        'authToken' => $this->get('Jwt')->getToken($user,'a'),
-                        'profile' => $profile->asArray(FALSE,['apepat','nombres'])
-                    ]);                    
-                }
-                return $this->json(['success'=>FALSE,'msg'=>'¡Usuario inactivo!'],Constante::$enumTock);                
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
+            if(!$user){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Usuario no registrado'
+                                        ],Constante::$enumNotExis);
             }
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>'¡username or password incorrect!']);
 
-        }catch (\Exception $e){
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ],Constante::$enumCodigo);
-        }
-    }
-
-    public function tokingAction(Request $request)
-    {   
-        try{        
-            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'));
-            if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
-            $user = $decoded['user'];
-
-            $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
-            return $this->json([
-                'success' => true,
-                'authToken' => $this->get('Jwt')->getToken($user,'a'),
-                'profile' => $profile->asArray(FALSE,['apepat','nombres'])
-            ]);  
+            $resp = $this->get('UserAccount')->sendCode($username);
+            return $resp;
             
         }catch (\Exception $e){
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
-                                    ],Constante::$enumCodigo);
+                                    ]);
         }
     }
-/*
-    // Change Password - POST
+
+    /*
     public function changePasswordAction(Request $request){
 
         try{

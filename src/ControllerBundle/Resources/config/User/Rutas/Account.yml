@@ -5,13 +5,6 @@ user/account/p:
   defaults  :   { _controller: ControllerBundle:User/Account:prueba}
   methods: [GET,OPTIONS]
 
-## --- User Account Create
-user/account/c:
-    
-  path:         /c
-  defaults  :   { _controller: ControllerBundle:User/Account:create}
-  methods: [POST,OPTIONS]
-
 ## --- User Account Login
 user/account/login:
     
@@ -25,6 +18,42 @@ user/account/toking:
   path:         /toking
   defaults  :   { _controller: ControllerBundle:User/Account:toking}
   methods: [GET,OPTIONS]
+
+## --- User Account SendCode
+user/account/sendcode:
+    
+  path:         /sendcode
+  defaults  :   { _controller: ControllerBundle:User/Account:sendCode}
+  methods: [POST,OPTIONS]
+
+## --- User Account CheckCode
+user/account/checkcode:
+    
+  path:         /checkcode
+  defaults  :   { _controller: ControllerBundle:User/Account:checkCode}
+  methods: [POST,OPTIONS]
+
+## --- User Account Create
+user/account/c:
+    
+  path:         /c
+  defaults  :   { _controller: ControllerBundle:User/Account:create}
+  methods: [POST,OPTIONS]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Change New Password
 user/account/changenewpwd:

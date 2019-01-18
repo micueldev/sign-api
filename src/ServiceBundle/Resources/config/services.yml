@@ -1,6 +1,5 @@
 services:
     
-
     ### CRUD ###
     Create:
         class : ServiceBundle\Service\CRUD\Create
@@ -24,6 +23,21 @@ services:
         class : ServiceBundle\Service\Util\Jwt
         arguments: ['@doctrine.orm.entity_manager']
 
+    Sms:
+        class : ServiceBundle\Service\Util\Sms
+        arguments: ['@doctrine.orm.entity_manager']
+
     Util:
         class : ServiceBundle\Service\Util\Util
+        #arguments: ['@doctrine.orm.entity_manager']
+
+
+    ################
+    ##### User #####
+    ################
+
+    ### Account ###
+    UserAccount:
+        class : ServiceBundle\Service\User\AccountService
         arguments: ['@doctrine.orm.entity_manager']
+

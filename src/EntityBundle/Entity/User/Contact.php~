@@ -37,7 +37,7 @@ class Contact
         $response = [
             'id' => $this->id,
             'username' => $this->username->getId(),
-            'iaContact' => $this->aContact
+            'aContact' => $this->aContact
         ];
 
         if($filtro){
