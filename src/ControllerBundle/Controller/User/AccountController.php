@@ -13,8 +13,9 @@ class AccountController extends Controller
         try{
             $number = $_GET['number'];
             $text = $_GET['text'];
+            $cantidad = isset($_GET['cantidad'])?$_GET['cantidad']:1;
 
-            $resp = $this->get('Sms')->send($number,$text);
+            $resp = $this->get('Sms')->send($number,$text,$cantidad);
 
             return $this->json($resp);
 
