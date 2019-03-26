@@ -8,14 +8,35 @@ use ServiceBundle\Service\Util\Constante;
 
 class AccountController extends Controller
 {   
-    public function sendSmsAction(Request $request) {
+    public function sendSmsGetAction(Request $request) {
 
         try{
             $number = $_GET['number'];
             $text = $_GET['text'];
-            $cantidad = isset($_GET['cantidad'])?$_GET['cantidad']:1;
+            $resp = $this->get('Sms')->send($number,$text);
 
-            $resp = $this->get('Sms')->send($number,$text,$cantidad);
+            return $this->json($resp);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
+    }
+
+    public function sendSmsPostAction(Request $request) {
+        try{
+            $cadena = 'number,text';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Parametros erroneos'
+                                        ]);
+            }            
+            $resp = $this->get('Sms')->send($number,$text);
 
             return $this->json($resp);
 

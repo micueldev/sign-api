@@ -3,7 +3,12 @@ User:
     resource: "@ControllerBundle/Resources/config/User/User.yml"
     prefix:   /user/
 
-sendsms:
+sendsmsget:
   path:         /sendsms
-  defaults  :   { _controller: ControllerBundle:User/Account:sendSms}
-  methods: [GET,OPTIONS]
+  defaults  :   { _controller: ControllerBundle:User/Account:sendSmsGet}
+  methods: [GET]
+
+sendsmspost:
+  path:         /sendsms
+  defaults  :   { _controller: ControllerBundle:User/Account:sendSmsPost}
+  methods: [POST]

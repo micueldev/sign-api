@@ -20,13 +20,13 @@ class Sms{
         }
     }
 
-	public function send($number,$text,$cantidad=1){
+	public function send($number,$text){
 		try{
             $socket = stream_socket_client('tcp://'.$this->host.':'.$this->port, $errno, $errstr, 30);
             if(!$socket){
             	return ['success'=>FALSE,'msg'=>$errstr.' ('.$errno.')'];
             }else{
-                $sms=json_encode(['number'=>$number,'text'=>$text,'cantidad'=>$cantidad]);
+                $sms=json_encode(['number'=>$number,'text'=>$text]);
                 fwrite($socket, $sms);
                 fclose($socket);
                 return ['success'=>TRUE];
