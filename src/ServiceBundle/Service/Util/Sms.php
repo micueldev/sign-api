@@ -28,8 +28,12 @@ class Sms{
             }else{
                 $sms=json_encode(['number'=>$number,'text'=>$text]);
                 fwrite($socket, $sms);
+                $resp = fread($socket, 26);
                 fclose($socket);
-                return ['success'=>TRUE];
+                if( substr($resp, 0,5)!='Error' )
+                    return ['success'=>TRUE];
+                
+                return ['success'=>TRUE,'msg'=>"No hay mensajero conectado."];
             }
 
         }catch (\Exception $e){
