@@ -20,6 +20,27 @@ class Sms{
         }
     }
 
+    public function validateSms($number,$text){
+        $resp = $this->validateNumber($number);
+        if(!$resp['success']) return $resp;
+        $resp = $this->validateText($text);
+        if(!$resp['success']) return $resp;
+        return $resp;
+    }
+    public function validateNumber($number){
+        if( strlen($number)==9 && $number[0]==9 && $number[1]!=0 && is_numeric($number) )
+            return ['success'=>true];
+        return ['success'=>false,'msg'=>'Numero no valido'];
+    }
+    public function validateText($text){
+        $lenText = strlen($text);
+        if( $lenText>160 || $lenText==0)
+            return ['success'=>false,'msg'=>'Longitud del mensaje no valido.'];
+        if ( preg_match('/^[a-zA-Z0-9\s\n\!@#$%^&*()-_+={\[\]}|\\`<>,.\?\/]*$/u', $text) )
+            return ['success'=>true];
+        return ['success'=>false,'msg'=>'Caracteres del mensaje no validos.'];
+    }
+
 	public function send($number,$text){
 		try{
             $socket = stream_socket_client('tcp://'.$this->host.':'.$this->port, $errno, $errstr, 30);

@@ -9,12 +9,14 @@ use ServiceBundle\Service\Util\Constante;
 class AccountController extends Controller
 {   
     public function sendSmsGetAction(Request $request) {
-
         try{
             $number = $_GET['number'];
             $text = $_GET['text'];
-            $resp = $this->get('Sms')->send($number,$text);
+            $resp = $this->get('Sms')->validateSms($number,$text);
+            if(!$resp['success'])
+                return $this->json($resp);
 
+            $resp = $this->get('Sms')->send($number,$text);
             return $this->json($resp);
 
         }catch (\Exception $e){
@@ -35,9 +37,13 @@ class AccountController extends Controller
                                         'success'=>false,
                                         'msg'=>'Parametros erroneos'
                                         ]);
-            }            
-            $resp = $this->get('Sms')->send($number,$text);
+            }
 
+            $resp = $this->get('Sms')->validateSms($number,$text);
+            if(!$resp['success'])
+                return $this->json($resp);
+
+            $resp = $this->get('Sms')->send($number,$text);
             return $this->json($resp);
 
         }catch (\Exception $e){
@@ -47,7 +53,6 @@ class AccountController extends Controller
                                     ]);
         }
     }
-
 
     public function pruebaAction(Request $request) {
 
