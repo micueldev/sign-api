@@ -17,6 +17,7 @@ class Sms{
         if($sms){
         	$this->host = $sms->getHost();
         	$this->port = $sms->getPort();
+            $this->appHash = $sms->getHash();
         }
     }
 
@@ -41,12 +42,15 @@ class Sms{
         return ['success'=>false,'msg'=>'Caracteres del mensaje no validos.'];
     }
 
-	public function send($number,$text){
-		try{
+	public function send($number,$text,$flagApp=false){
+		//try{
             $socket = stream_socket_client('tcp://'.$this->host.':'.$this->port, $errno, $errstr, 30);
             if(!$socket){
             	return ['success'=>FALSE,'msg'=>$errstr.' ('.$errno.')'];
             }else{
+                if($flagApp)
+                    $text = '<#> '.$text."\n".$this->appHash;
+                
                 $sms=json_encode(['number'=>$number,'text'=>$text]);
                 fwrite($socket, $sms);
                 $resp = fread($socket, 26);
@@ -57,8 +61,9 @@ class Sms{
                 return ['success'=>TRUE,'msg'=>"No hay mensajero conectado."];
             }
 
-        }catch (\Exception $e){
+        /*}catch (\Exception $e){
+            echo($e->getMessage());
             return ['success'=>FALSE,'msg'=>$e->getMessage()];
-        }
+        }*/
     }
 }

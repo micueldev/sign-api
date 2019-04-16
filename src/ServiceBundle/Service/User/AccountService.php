@@ -49,7 +49,7 @@ class AccountService{
         $text.=$code;
 
         $sms = new Sms($this->em);
-        $resp = $sms->send($username,$text);
+        $resp = $sms->send($username,$text,true);
 
         return $resp;
     }

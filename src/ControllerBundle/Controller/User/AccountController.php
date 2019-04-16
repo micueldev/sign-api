@@ -127,7 +127,7 @@ class AccountController extends Controller
 
     public function sendCodeAction(Request $request) {
 
-        try{
+        //try{
             $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
@@ -148,13 +148,14 @@ class AccountController extends Controller
 
             $this->get('UserAccount')->sendCode($username);
             return  $this->json(['success'=>true]);
-
+/*
         }catch (\Exception $e){
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
                                     ]);
         }
+        */
     }
 
     public function checkCodeAction(Request $request) {

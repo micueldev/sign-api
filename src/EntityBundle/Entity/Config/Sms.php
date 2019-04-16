@@ -33,12 +33,18 @@ class Sms
      */
     private $port;
 
+    /**
+     * @ORM\Column(type="string", length=11, nullable=true)
+     */
+    private $hash;
+
 
     public function asArray($filtro=NULL){
 
         $response = [
             'host' => $this->host,
-            'port' => $this->port
+            'port' => $this->port,
+            'hash' => $this->hash
         ];
 
         if($filtro){
@@ -128,5 +134,29 @@ class Sms
     public function getPort()
     {
         return $this->port;
+    }
+
+    /**
+     * Set hash
+     *
+     * @param string $hash
+     *
+     * @return Sms
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    /**
+     * Get hash
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
     }
 }
