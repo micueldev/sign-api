@@ -125,9 +125,9 @@ class AccountController extends Controller
         }
     }
 
-    public function sendCodeAction(Request $request) {
+    public function existAction(Request $request) {
 
-        //try{
+        try{
             $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
@@ -138,7 +138,34 @@ class AccountController extends Controller
                                         ],Constante::$enumPerm);
             }
 
-            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
+            $exist = false;
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
+            if($user) $exist = true;
+            
+            return  $this->json(['success'=>true,'exist'=>$exist]);
+
+        }catch (\Exception $e){
+            return $this->json([
+                                    'success'=>false,
+                                    'msg'=>$e->getMessage()
+                                    ]);
+        }
+    }
+
+    public function sendCodeAction(Request $request) {
+
+        try{
+            $cadena = 'username';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'faltan parametros'
+                                        ],Constante::$enumPerm);
+            }
+
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
             if($user){
                 return  $this->json ([
                                         'success'=>false,
@@ -148,14 +175,13 @@ class AccountController extends Controller
 
             $this->get('UserAccount')->sendCode($username);
             return  $this->json(['success'=>true]);
-/*
+
         }catch (\Exception $e){
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
                                     ]);
         }
-        */
     }
 
     public function checkCodeAction(Request $request) {
@@ -283,7 +309,7 @@ class AccountController extends Controller
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
             if(!$existen){
-                return  $this->json ([
+                return  $this->json([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
@@ -291,14 +317,14 @@ class AccountController extends Controller
 
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
             if(!$user){
-                return  $this->json ([
+                return  $this->json([
                                         'success'=>false,
                                         'msg'=>'Usuario no registrado'
                                         ],Constante::$enumNotExis);
             }
 
             $resp = $this->get('UserAccount')->sendCode($username);
-            return $resp;
+            return $this->json($resp);
             
         }catch (\Exception $e){
             return $this->json([

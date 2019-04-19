@@ -19,6 +19,13 @@ user/account/toking:
   defaults  :   { _controller: ControllerBundle:User/Account:toking}
   methods: [GET,OPTIONS]
 
+## --- User Account exist
+user/account/exist:
+    
+  path:         /exist
+  defaults  :   { _controller: ControllerBundle:User/Account:exist}
+  methods: [POST,OPTIONS]
+
 ## --- User Account SendCode
 user/account/sendcode:
     
@@ -40,7 +47,12 @@ user/account/c:
   defaults  :   { _controller: ControllerBundle:User/Account:create}
   methods: [POST,OPTIONS]
 
-
+## --- User Account SendCodeUser
+user/account/sendcodeuser:
+    
+  path:         /sendcodeuser
+  defaults  :   { _controller: ControllerBundle:User/Account:sendCodeUser}
+  methods: [POST,OPTIONS]
 
 
 

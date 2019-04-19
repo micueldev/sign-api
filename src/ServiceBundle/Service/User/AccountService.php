@@ -44,9 +44,8 @@ class AccountService{
         if(!$uCode['success'])
             return $uCode;
 
-        $text = "".(Constante::$name)."\n";
-        $text.="Verification code\n";
-        $text.=$code;
+        $text = 'Your '.(Constante::$name).' code is: '.$code."\n";
+        $text.="_________________________";
 
         $sms = new Sms($this->em);
         $resp = $sms->send($username,$text,true);
