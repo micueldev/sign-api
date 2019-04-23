@@ -333,7 +333,6 @@ class AccountController extends Controller
                                     ]);
         }
     }
-
     /*
     public function changePasswordAction(Request $request){
 
@@ -387,59 +386,70 @@ class AccountController extends Controller
                                     ],Constante::$enumCodigo);
         }
 
-    }
+    }*/
 
     // Change Password - POST
     public function changeNewPasswordAction(Request $request){
 
-        $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'),'c');
-        if(!$decoded['success']) return new JsonResponse($decoded,Constante::$enumTock);
-        $user = $decoded['user'];
+        try{           
+            $cadena = 'username,code,password';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'faltan parametros'
+                                        ],Constante::$enumPerm);
+            }
 
+            $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
+            if(!$user){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'El numero de telefono no esta registrado'
+                                        ],Constante::$enumNotExis);
+            }
 
-        $cadena = 'codcheck,newpwd,rnewpwd';
+            $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
+            if(!$uCode){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS invalid'
+                                        ],Constante::$enumNotExis);
+            }
 
-        $sentencia = $this->get('Read')->getData($cadena);
-        eval($sentencia);
-        if(!$existen){
-            return New JsonResponse ([
+            if( $code!=$uCode->getCode() ){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Code SMS incorrect'
+                                        ],Constante::$enumNotExis);
+            }
+
+            $begin;
+            $this->getDoctrine()->getConnection()->beginTransaction();
+
+            $cadena = 'username^'.$username;
+            $cadena.= '|password^'.password_hash($password,PASSWORD_DEFAULT);
+            $user = $this->get('Update')->upEntity('User\User',['id'=>$user->getId(),'cadena'=>$cadena]);
+            if(!$user['success']){
+                return  $this->json($nUser,Constante::$enumCodigo);
+            }
+
+            $this->getDoctrine()->getConnection()->commit();
+            return  $this->json(['success'=>true]);
+
+        }catch (\Exception $e){
+            if( isset($begin) ){
+                $this->getDoctrine()->getConnection()->rollBack();    
+            }
+            return $this->json([
                                     'success'=>false,
-                                    'msg'=>'No se encontro al parametro ('.$faltante.')'
-                                    ],Constante::$enumParam);
+                                    'msg'=>$e->getMessage()
+                                    ],Constante::$enumCodigo);
         }
-
-        if (strcmp($newpwd, $rnewpwd) !== 0) {
-            return New JsonResponse (['success'=>false,'msg'=>'La nueva clave no coincide con la confirmacion.'],Constante::$enumAceptado);
-        }
-                
-        $verifica = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneByIdCl($user->getId());
-        if(!$verifica){
-            return New JsonResponse (['success'=>false,'msg'=>'No se encontro codigo de verificacion, contactarse con soporte.'],Constante::$enumAceptado);
-        }
-
-        if (strcmp($codcheck, $verifica->getCodcheck()) !== 0){
-            return New JsonResponse (['success'=>false,'msg'=>'Codigo incorrecto.'],Constante::$enumAceptado);
-        }
-
-        if( strlen($newpwd)<8){
-            return New JsonResponse (['success'=>false,'msg'=>'La nueva clave debe tener como minimo 8 caracteres.'],Constante::$enumAceptado);
-        }
-        
-        $encriptado = password_hash($newpwd,PASSWORD_DEFAULT);
-        //$option = 'password^'.$newpwd.'|pwd^0';
-        $cadena = 'password^'.$encriptado;
-        $resp = $this->get('Update')->upEntity('Cliente\Cliente',['id'=>$user->getId(),'cadena'=>$cadena],false);
-        if (!$resp['success']){
-            return New JsonResponse ($resp,Constante::$enumCodigo);
-        }
-
-        $user_cliente = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneBy(array('idCl'=>$user->getId()));
-        $cadena = 'password^'.$encriptado . '|codcheck^' ;
-        $resp = $this->get('Update')->upEntity('Cliente\Users',['id'=>$user_cliente->getId(),'cadena'=>$cadena],false);
-        return New JsonResponse ($resp);
     }
 
-
+    /*
     // Recover Password - POST
     public function recoverPasswordAction(Request $request){
         $cadena = 'usermail';

@@ -54,25 +54,20 @@ user/account/sendcodeuser:
   defaults  :   { _controller: ControllerBundle:User/Account:sendCodeUser}
   methods: [POST,OPTIONS]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Change New Password
+## --- User Account ChangeNewPassword
 user/account/changenewpwd:
 
   path:         /changenewpwd
   defaults  :   { _controller: ControllerBundle:User/Account:changeNewPassword}
   methods: [POST,OPTIONS]
+
+
+
+
+
+
+
+
 
 # Change Password
 user/account/changepwd:
