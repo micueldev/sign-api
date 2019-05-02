@@ -1,0 +1,13 @@
+# --- MyAccount Info Toking
+myaccount/info/toking:
+    
+  path:         /toking
+  defaults  :   { _controller: ControllerBundle:MyAccount/Info:toking}
+  methods: [GET,OPTIONS]
+
+# --- MyAccount Info SetLocation
+myaccount/info/setlocation:
+    
+  path:         /setlocation
+  defaults  :   { _controller: ControllerBundle:MyAccount/Info:setLocation}
+  methods: [PATCH,OPTIONS]

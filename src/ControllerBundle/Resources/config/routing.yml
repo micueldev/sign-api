@@ -3,6 +3,15 @@ User:
     resource: "@ControllerBundle/Resources/config/User/User.yml"
     prefix:   /user/
 
+# --- MyAccount
+MyAccount:
+    resource: "@ControllerBundle/Resources/config/MyAccount/MyAccount.yml"
+    prefix:   /myaccount/
+
+
+###########################################################################
+###########################################################################
+###########################################################################
 sendsmsget:
   path:         /sendsms
   defaults  :   { _controller: ControllerBundle:User/Account:sendSmsGet}

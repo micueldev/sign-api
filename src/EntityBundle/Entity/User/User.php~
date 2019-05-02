@@ -29,9 +29,16 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     private $isActive=TRUE;
+
+    /**
+     * @ORM\Column(type="point", nullable=true)
+     *
+     * @var EntityBundle\Model\Object\Point
+     */
+    private $lastLocation;
 
 
     public function asArray($filtro=NULL){
@@ -39,7 +46,8 @@ class User
         $response = [
             'id' => $this->id,
             'username' => $this->username,
-            'isActive' => $this->isActive
+            'isActive' => $this->isActive,
+            //'lastLocation'=>$this->lastLocation,
         ];
 
         if($filtro){
@@ -47,87 +55,5 @@ class User
         }
 
         return $response;
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set username
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Get username
-     *
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Get password
-     *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return User
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
     }
 }

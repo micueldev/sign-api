@@ -2,8 +2,3 @@
 user/account:
     resource: "@ControllerBundle/Resources/config/User/Rutas/Account.yml"
     prefix:   /account/
-
-# --- User Contact
-user/contact:
-    resource: "@ControllerBundle/Resources/config/User/Rutas/Contact.yml"
-    prefix:   /contact/

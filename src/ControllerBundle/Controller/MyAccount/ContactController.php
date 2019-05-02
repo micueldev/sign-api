@@ -1,6 +1,6 @@
 <?php
 
-namespace ControllerBundle\Controller\User;
+namespace ControllerBundle\Controller\MyAccount;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -88,7 +88,7 @@ class ContactController extends Controller
                 $cadena = 'user/User\User^'.$user->getId();
                 $contacts = $this->get('Create')->create('User\Contact',['cadena'=>$cadena]);
                 if(!$contacts['success']) return $this->json($contacts,Constante::$enumCodigo);
-                $contacts = $resp['entity']; 
+                $contacts = $contacts['entity']; 
             }
   
             $aContact = $contacts->getAContact();

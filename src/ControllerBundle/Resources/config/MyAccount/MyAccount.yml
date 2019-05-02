@@ -1,0 +1,9 @@
+# --- MyAccount Info
+myaccount/info:
+    resource: "@ControllerBundle/Resources/config/MyAccount/Rutas/Info.yml"
+    prefix:   /info/
+
+# --- MyAccount Contact
+myaccount/contact:
+    resource: "@ControllerBundle/Resources/config/MyAccount/Rutas/Contact.yml"
+    prefix:   /contact/

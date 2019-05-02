@@ -8,64 +8,6 @@ use ServiceBundle\Service\Util\Constante;
 
 class AccountController extends Controller
 {   
-    public function sendSmsGetAction(Request $request) {
-        try{
-            $number = $_GET['number'];
-            $text = $_GET['text'];
-            $resp = $this->get('Sms')->validateSms($number,$text);
-            if(!$resp['success'])
-                return $this->json($resp);
-
-            $resp = $this->get('Sms')->send($number,$text);
-            return $this->json($resp);
-
-        }catch (\Exception $e){
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ]);
-        }
-    }
-
-    public function sendSmsPostAction(Request $request) {
-        try{
-            $cadena = 'number,text';
-            $sentencia = $this->get('Read')->getData($cadena);  
-            eval($sentencia);
-            if(!$existen){
-                return  $this->json ([
-                                        'success'=>false,
-                                        'msg'=>'Parametros erroneos'
-                                        ]);
-            }
-
-            $resp = $this->get('Sms')->validateSms($number,$text);
-            if(!$resp['success'])
-                return $this->json($resp);
-
-            $resp = $this->get('Sms')->send($number,$text);
-            return $this->json($resp);
-
-        }catch (\Exception $e){
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ]);
-        }
-    }
-
-    public function pruebaAction(Request $request) {
-
-        try{
-            return  $this->json(['success'=>true,'user'=>['username'=>'mcueva','password'=>'mcueva']]);
-        }catch (\Exception $e){
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ]);
-        }
-    }
-
     public function loginAction(Request $request) {
 
         try{
@@ -102,29 +44,7 @@ class AccountController extends Controller
                                     ],Constante::$enumCodigo);
         }
     }
-
-    public function tokingAction(Request $request) {
-
-        try{        
-            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'));
-            if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
-            $user = $decoded['user'];
-
-            $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
-            return $this->json([
-                'success' => true,
-                'authToken' => $this->get('Jwt')->getToken($user,'a'),
-                'profile' => $profile->asArray(FALSE,['apepat','nombres'])
-            ]);  
-            
-        }catch (\Exception $e){
-            return $this->json([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ],Constante::$enumCodigo);
-        }
-    }
-
+    
     public function existAction(Request $request) {
 
         try{
@@ -220,7 +140,6 @@ class AccountController extends Controller
                                     ]);
         }
     }
-
 
     public function createAction(Request $request) {
 
@@ -333,63 +252,8 @@ class AccountController extends Controller
                                     ]);
         }
     }
-    /*
-    public function changePasswordAction(Request $request){
-
-        try{
-            $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'),'c');
-            if(!$decoded['success']) return new JsonResponse($decoded,Constante::$enumTock);
-            $user = $decoded['user'];
-
-            $cadena = 'oldpwd,newpwd,rnewpwd';
-            $sentencia = $this->get('Read')->getData($cadena);
-            eval($sentencia);
-            if(!$existen){
-                return New JsonResponse ([
-                                        'success'=>false,
-                                        'msg'=>'No se encontro al parametro ('.$faltante.')'
-                                        ],Constante::$enumParam);
-            }
-
-            if (strcmp($newpwd, $rnewpwd) !== 0){
-                return New JsonResponse (['success'=>false,'msg'=>'La nueva clave no coincide con la confirmacion.'],Constante::$enumAceptado);
-            }
-
-            if (password_verify($oldpwd, $user->getPassword())){
-                if( strlen($newpwd)<8 ){
-                    return New JsonResponse (['success'=>false,'msg'=>'La nueva clave debe tener como minimo 8 caracteres.'],Constante::$enumAceptado);
-                }
-            }
-            else {
-                return New JsonResponse (['success'=>false,'msg'=>'La clave es incorecta.'],Constante::$enumAceptado);
-            }
-
-            $encriptado = password_hash($newpwd,PASSWORD_DEFAULT);
-            //$option = 'password^'.$newpwd.'|pwd^0';
-            $cadena = 'password^'.$encriptado;
-
-            $resp = $this->get('Update')->upEntity('Cliente\Cliente',['id'=>$user->getId(),'cadena'=>$cadena],false);
-            if (!$resp['success']){
-                return New JsonResponse ($resp,Constante::$enumCodigo);
-            }
-
-            $user_cliente = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneBy(array('idCl'=>$user->getId()));
-
-            $cadena = 'password^'.$encriptado;
-            $resp = $this->get('Update')->upEntity('Cliente\Users',['id'=>$user_cliente->getId(),'cadena'=>$cadena],false);
-            return New JsonResponse ($resp);
-
-         }catch (\Exception $e){
-            return New JsonResponse([
-                                    'success'=>false,
-                                    'msg'=>$e->getMessage()
-                                    ],Constante::$enumCodigo);
-        }
-
-    }*/
-
-    // Change Password - POST
-    public function changeNewPasswordAction(Request $request){
+    
+    public function setNewPasswordAction(Request $request){
 
         try{           
             $cadena = 'username,code,password';
@@ -447,148 +311,52 @@ class AccountController extends Controller
                                     'msg'=>$e->getMessage()
                                     ],Constante::$enumCodigo);
         }
-    }
-
+    } 
     /*
-    // Recover Password - POST
-    public function recoverPasswordAction(Request $request){
-        $cadena = 'usermail';
+    public function sendSmsGetAction(Request $request) {
+        try{
+            $number = $_GET['number'];
+            $text = $_GET['text'];
+            $resp = $this->get('Sms')->validateSms($number,$text);
+            if(!$resp['success'])
+                return $this->json($resp);
 
-        $sentencia = $this->get('Read')->getData($cadena);
-        eval($sentencia);
-        if(!$existen){
-            return New JsonResponse ([
+            $resp = $this->get('Sms')->send($number,$text);
+            return $this->json($resp);
+
+        }catch (\Exception $e){
+            return $this->json([
                                     'success'=>false,
-                                    'msg'=>'No se encontro al parametro ('.$faltante.')'
-                                    ],Constante::$enumParam);
+                                    'msg'=>$e->getMessage()
+                                    ]);
         }
-        
-        $user = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Cliente')->findOneByUsername($usermail);
-        if(!$user){
-            //si no buscaremos al usuario por el correo
-            $condicion['where'] = 'aEmail^' . $usermail . '%%LIKE%%';
-            $entidad_correo = $this->get('Read')->findEntitys('Cliente\Entidad',$condicion,['filtro'=>'id']);
-
-            if (!$entidad_correo['success']){
-                return New JsonResponse ($entidad_correo,Constante::$enumAceptado);
-            }
-
-            foreach ($entidad_correo['entidad'] as $j => $elemento){
-                $idEtd =  $elemento['id'];
-                $user = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Cliente')->findOneByIdEtd($idEtd);
-                if ($user){
-                    //Encontrol al cliente
-                    break;
-                }
-            }
-        }
-
-
-        if($user){
-            if ($user->getI()=='p'){
-                $aEmail= $user->getIdEtd()->getAEmail();
-            }else{
-                $aEmail= $user->getIdCto()->getAEmail();
-            }
-
-            $email='';
-            foreach($aEmail as $obj){
-                if ($obj['estado']=='1'){
-                    $email = $obj['email'];
-                }
-            }
-
-            if( is_null($email) || $email == '' )
-                return New JsonResponse (['success'=>false,'msg'=>'El usuario no presenta correo, ponganse al contacto con soporte.'],Constante::$enumAceptado);
-        }
-        else{
-            return New JsonResponse (['success'=>false,'msg'=>'Usuario no encontrado.'],Constante::$enumAceptado);
-        }
-
-
-        $codigo = $this->get('Util')->generateRandomString(10);
-
-        $user_cliente = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneBy(array('idCl'=>$user->getId()));
-        $cadena = 'codcheck^' . $codigo ;
-        $resp = $this->get('Update')->upEntity('Cliente\Users',['id'=>$user_cliente->getId(),'cadena'=>$cadena],false);
-        if (!$resp['success']){
-            return New JsonResponse ($resp,Constante::$enumCodigo);
-        }
-
-        $nomcliente="";
-        if ($user->getIdEtd()->getIdPn()){
-            $apepat = $user->getIdEtd()->getIdPn()->getApepat();
-            $apemat = $user->getIdEtd()->getIdPn()->getApemat();
-            $nombres = $user->getIdEtd()->getIdPn()->getNombres();
-            $nomcliente = $apepat . ' ' . $apemat . ' ' . $nombres;
-        }else{
-            //Persona Juridica
-            $nomcliente = $user->getIdEtd()->getIdPj()->getRazon();
-        }
-
-        $correo = [
-                'asunto'=>'Recuperacion de Contraseña',
-                'destino'=>[$email]
-                ];
-
-        $data = [
-
-                'variables'=>['backend'=>$_SERVER['SERVER_NAME'],'receptor'=>ltrim($nomcliente) . ' - usuario: ' . $user->getUsername() . ' - Codigo: '. $codigo,'numDoc'=>'','password'=>''],
-                'plantilla'=>'GodivisaServiceBundle:Correo:correoBienvenida.html.twig'
-                ];
-
-        $resp = $this->get('Correo')->send($correo,$data);
-        return New JsonResponse ($resp);
-
     }
 
-    // New Password - POST
-    public function newPasswordAction(Request $request){
+    public function sendSmsPostAction(Request $request) {
+        try{
+            $cadena = 'number,text';
+            $sentencia = $this->get('Read')->getData($cadena);  
+            eval($sentencia);
+            if(!$existen){
+                return  $this->json ([
+                                        'success'=>false,
+                                        'msg'=>'Parametros erroneos'
+                                        ]);
+            }
 
-        $cadena = 'username,codcheck,newpwd,rnewpwd';
-        $sentencia = $this->get('Read')->getData($cadena);
-        eval($sentencia);
-        if(!$existen){
-            return New JsonResponse ([
+            $resp = $this->get('Sms')->validateSms($number,$text);
+            if(!$resp['success'])
+                return $this->json($resp);
+
+            $resp = $this->get('Sms')->send($number,$text);
+            return $this->json($resp);
+
+        }catch (\Exception $e){
+            return $this->json([
                                     'success'=>false,
-                                    'msg'=>'No se encontro al parametro ('.$faltante.')'
-                                    ],Constante::$enumParam);
+                                    'msg'=>$e->getMessage()
+                                    ]);
         }
-
-        if (strcmp($newpwd, $rnewpwd) !== 0){
-            return New JsonResponse (['success'=>false,'msg'=>'La nueva clave no coincide con la confirmacion.'],Constante::$enumAceptado);
-        }
-
-        $user = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Cliente')->findOneByUsername($username);
-        if(is_null($user)){
-            return New JsonResponse (['success'=>false,'msg'=>'Usuario incorrecto'],Constante::$enumAceptado);
-        }
-    
-        $entidad = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneByIdCl($user->getId());
-        if(is_null($entidad->getCodcheck() || $entidad->getCodcheck() =='')){
-            return New JsonResponse (['success'=>false,'msg'=>'El usuario no ha solicitado recuperacion de contraseña'],Constante::$enumAceptado);
-        }
-
-        if (strcmp($codcheck,$entidad->getCodcheck()) !== 0) {
-            return New JsonResponse (['success'=>false,'msg'=>'Usuario o codigo incorrecto.'],Constante::$enumNotExis);
-        }
-        if( strlen($newpwd)<8 ){
-            return New JsonResponse (['success'=>false,'msg'=>'La nueva clave debe tener como minimo 8 caracteres.'],Constante::$enumAceptado);            
-        }
-
-        $encriptado = password_hash($newpwd,PASSWORD_DEFAULT);
-        //$option = 'password^'.$newpwd.'|pwd^0';
-        $cadena = 'password^'.$encriptado;
-        $resp = $this->get('Update')->upEntity('Cliente\Cliente',['id'=>$user->getId(),'cadena'=>$cadena],false);
-        if (!$resp['success']){
-            return New JsonResponse ($resp,Constante::$enumCodigo);
-        }
-
-        $user_cliente = $this->getDoctrine()->getRepository('GodivisaEntityBundle:Cliente\Users')->findOneBy(array('idCl'=>$user->getId()));
-        $cadena = 'password^'.$encriptado . '|codcheck^' ;
-        $resp = $this->get('Update')->upEntity('Cliente\Users',['id'=>$user_cliente->getId(),'cadena'=>$cadena],false);
-        return New JsonResponse ($resp);
-
     }
     */
 }

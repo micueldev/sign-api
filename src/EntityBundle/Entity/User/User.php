@@ -29,9 +29,16 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     private $isActive=TRUE;
+
+    /**
+     * @ORM\Column(type="point", nullable=true)
+     *
+     * @var EntityBundle\Model\Object\Point
+     */
+    private $lastLocation;
 
 
     public function asArray($filtro=NULL){
@@ -39,7 +46,8 @@ class User
         $response = [
             'id' => $this->id,
             'username' => $this->username,
-            'isActive' => $this->isActive
+            'isActive' => $this->isActive,
+            //'lastLocation'=>$this->lastLocation,
         ];
 
         if($filtro){
@@ -50,9 +58,9 @@ class User
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -60,7 +68,7 @@ class User
     }
 
     /**
-     * Set username
+     * Set username.
      *
      * @param string $username
      *
@@ -74,7 +82,7 @@ class User
     }
 
     /**
-     * Get username
+     * Get username.
      *
      * @return string
      */
@@ -84,7 +92,7 @@ class User
     }
 
     /**
-     * Set password
+     * Set password.
      *
      * @param string $password
      *
@@ -98,7 +106,7 @@ class User
     }
 
     /**
-     * Get password
+     * Get password.
      *
      * @return string
      */
@@ -108,9 +116,9 @@ class User
     }
 
     /**
-     * Set isActive
+     * Set isActive.
      *
-     * @param boolean $isActive
+     * @param bool $isActive
      *
      * @return User
      */
@@ -122,12 +130,36 @@ class User
     }
 
     /**
-     * Get isActive
+     * Get isActive.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set lastLocation.
+     *
+     * @param point|null $lastLocation
+     *
+     * @return User
+     */
+    public function setLastLocation($lastLocation = null)
+    {
+        $this->lastLocation = $lastLocation;
+
+        return $this;
+    }
+
+    /**
+     * Get lastLocation.
+     *
+     * @return point|null
+     */
+    public function getLastLocation()
+    {
+        return $this->lastLocation;
     }
 }
