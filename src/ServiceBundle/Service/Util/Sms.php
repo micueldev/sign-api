@@ -43,7 +43,7 @@ class Sms{
     }
 
 	public function send($number,$text,$flagApp=false){
-		//try{
+		try{
             $socket = stream_socket_client('tcp://'.$this->host.':'.$this->port, $errno, $errstr, 30);
             if(!$socket){
             	return ['success'=>FALSE,'msg'=>$errstr.' ('.$errno.')'];
@@ -61,9 +61,9 @@ class Sms{
                 return ['success'=>TRUE,'msg'=>"No hay mensajero conectado."];
             }
 
-        /*}catch (\Exception $e){
+        }catch (\Exception $e){
             echo($e->getMessage());
             return ['success'=>FALSE,'msg'=>$e->getMessage()];
-        }*/
+        }
     }
 }

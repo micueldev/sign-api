@@ -21,4 +21,10 @@ class Util{
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         return $randomString;
     }
+
+    public function validateMobilNumber($number){
+        if( strlen($number)==9 && $number[0]==9 && $number[1]!=0 && is_numeric($number) )
+            return ['success'=>true];
+        return ['success'=>false,'msg'=>'Numero no valido'];
+    }
 }

@@ -41,3 +41,7 @@ services:
         class : ServiceBundle\Service\User\AccountService
         arguments: ['@doctrine.orm.entity_manager']
 
+    ### Contact ###
+    MyAccountContact:
+        class : ServiceBundle\Service\User\ContactService
+        arguments: ['@doctrine.orm.entity_manager']

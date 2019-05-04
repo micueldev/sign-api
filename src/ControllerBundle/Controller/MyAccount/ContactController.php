@@ -80,6 +80,11 @@ class ContactController extends Controller
                                         ],Constante::$enumPerm);
             }
 
+            $resp = $this->get('Util')->validateMobilNumber($number);
+            if(!$resp['success']){
+                return  $this->json($resp);
+            }
+
             $begin;
             $this->getDoctrine()->getConnection()->beginTransaction();
 
@@ -137,6 +142,11 @@ class ContactController extends Controller
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
+            }
+
+            $resp = $this->get('Util')->validateMobilNumber($number);
+            if(!$resp['success']){
+                return  $this->json($resp);
             }
 
             $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 

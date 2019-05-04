@@ -11,3 +11,10 @@ myaccount/info/setlocation:
   path:         /setlocation
   defaults  :   { _controller: ControllerBundle:MyAccount/Info:setLocation}
   methods: [PATCH,OPTIONS]
+
+# --- MyAccount Info SendAlert
+myaccount/info/sendalert:
+    
+  path:         /sendalert
+  defaults  :   { _controller: ControllerBundle:MyAccount/Info:sendAlert}
+  methods: [POST,OPTIONS]
