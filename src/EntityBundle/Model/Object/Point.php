@@ -25,8 +25,8 @@ class Point {
     public function getLongitude() {
         return $this->longitude;
     }
- 
+
     public function __toString() {
-        return sprintf('POINT(%f %f)', $this->latitude, $this->longitude);
+        return sprintf('POINT(%f %f)', $this->longitude, $this->latitude);
     }
 }

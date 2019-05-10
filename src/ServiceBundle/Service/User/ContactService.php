@@ -25,6 +25,9 @@ class ContactService{
         $latitude = $location->getLatitude();
         $longitude = $location->getLongitude();
 
+        $this->getNearUsers($latitude,$longitude,$user->getId());
+        die();
+
         $contacts = $this->em->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId());
         if(!$contacts){
             return [
@@ -54,5 +57,18 @@ class ContactService{
                 return $resp;
         }
         return ['success'=>true];
+    }
+
+    public function getNearUsers($latitude,$longitude,$uId){
+
+        $point = new \EntityBundle\Model\Object\Point($latitude,$longitude);
+
+        $consulta= 'SELECT E.id, DISTANCE(E.lastLocation ,POINT_STR(\''.$point.'\')) AS distance_m
+                FROM EntityBundle:User\User E
+                WHERE E.id<>'.$uId.'
+                HAVING distance_m < 2000';
+        $query = $this->em->createQuery($consulta);
+
+        return $query->getResult();
     }
 }
