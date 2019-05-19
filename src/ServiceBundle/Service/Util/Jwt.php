@@ -16,14 +16,20 @@ class Jwt
     }
 
 	public function getToken($usuario){
-        //Generando Token JWT
-        $token = array(
+
+        $token = [
             "id" => $usuario->getId(),
             "username" => $usuario->getUsername(),
             "iat" => time(),
             //"exp" => time() + (7*24*60*60),
-        );
+        ];
         
+        $conexion = $this->em->getRepository('EntityBundle:Config\Platform')->findOneByCod(Constante::$codConfig);
+        if($conexion){
+            $token['domain'] = $conexion->getDomain();
+            $token['subdomain'] = $conexion->getSubdomain();
+        }
+                
 		return firejwt::encode($token, $this->key, 'HS256');
 	}
 

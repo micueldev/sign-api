@@ -66,20 +66,20 @@ class InfoController extends Controller
 
     public function sendAlertAction(Request $request) {
 
-        //try{
+        try{
             $decoded = $this->get('Jwt')->decodeToken($request->headers->get('authToken'));
             if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
             $user = $decoded['user'];
 
-            $resp = $this->get('MyAccountContact')->sendAlert($user);
+            $resp = $this->get('UserAlert')->sendAlert($user);
             return $this->json($resp);
-        /*  
+
         }catch (\Exception $e){
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
                                     ],Constante::$enumCodigo);
-        }*/
+        }
     }
 
     /*

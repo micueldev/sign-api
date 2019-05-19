@@ -36,12 +36,12 @@ services:
     ##### User #####
     ################
 
-    ### Account ###
+    ### User Account ###
     UserAccount:
         class : ServiceBundle\Service\User\AccountService
         arguments: ['@doctrine.orm.entity_manager']
 
-    ### Contact ###
-    MyAccountContact:
-        class : ServiceBundle\Service\User\ContactService
+    ### User Alert ###
+    UserAlert:
+        class : ServiceBundle\Service\User\AlertService
         arguments: ['@doctrine.orm.entity_manager']

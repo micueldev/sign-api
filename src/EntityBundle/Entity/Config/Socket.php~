@@ -1,0 +1,45 @@
+<?php
+
+namespace EntityBundle\Entity\Config;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Socket
+ * @ORM\Entity
+ * @ORM\Table(name="Config_Socket")
+ */
+class Socket
+{
+	/**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $cod;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $domain;
+
+    public function asArray($filtro=NULL){
+
+        $response = [
+            //'id' => $this->id,
+            //'cod' => $this->cod,
+            'domain' => $this->domain,
+        ];
+
+        if($filtro){
+            $response = array_intersect_key($response, array_flip($filtro));
+        }
+
+        return $response;
+    }
+}
