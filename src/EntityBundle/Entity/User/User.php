@@ -40,6 +40,20 @@ class User
      */
     private $lastLocation;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAlert=FALSE;
+
+    /**
+    * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fLastAlert;
+
+    /**
+    * @ORM\Column(type="json_array")
+    */
+    private $aUserAlert=[];  //Usuarios a los que va alertando
 
     public function asArray($filtro=NULL){
 
@@ -48,6 +62,8 @@ class User
             'username' => $this->username,
             'isActive' => $this->isActive,
             //'lastLocation'=>$this->lastLocation,
+            //'isAlert'=>$this->isAlert,
+            //'fLastAlert'=>$this->fLastAlert,
         ];
 
         if($filtro){
@@ -161,5 +177,77 @@ class User
     public function getLastLocation()
     {
         return $this->lastLocation;
+    }
+
+    /**
+     * Set isAlert.
+     *
+     * @param bool $isAlert
+     *
+     * @return User
+     */
+    public function setIsAlert($isAlert)
+    {
+        $this->isAlert = $isAlert;
+
+        return $this;
+    }
+
+    /**
+     * Get isAlert.
+     *
+     * @return bool
+     */
+    public function getIsAlert()
+    {
+        return $this->isAlert;
+    }
+
+    /**
+     * Set fLastAlert.
+     *
+     * @param \DateTime|null $fLastAlert
+     *
+     * @return User
+     */
+    public function setFLastAlert($fLastAlert = null)
+    {
+        $this->fLastAlert = $fLastAlert;
+
+        return $this;
+    }
+
+    /**
+     * Get fLastAlert.
+     *
+     * @return \DateTime|null
+     */
+    public function getFLastAlert()
+    {
+        return $this->fLastAlert;
+    }
+
+    /**
+     * Set aUserAlert.
+     *
+     * @param array $aUserAlert
+     *
+     * @return User
+     */
+    public function setAUserAlert($aUserAlert)
+    {
+        $this->aUserAlert = $aUserAlert;
+
+        return $this;
+    }
+
+    /**
+     * Get aUserAlert.
+     *
+     * @return array
+     */
+    public function getAUserAlert()
+    {
+        return $this->aUserAlert;
     }
 }

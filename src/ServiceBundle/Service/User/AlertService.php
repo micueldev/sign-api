@@ -5,6 +5,7 @@ namespace ServiceBundle\Service\User;
 use Doctrine\ORM\EntityManager;
 use ServiceBundle\Service\Util\Sms;
 use ServiceBundle\Service\Util\Socket;
+use ServiceBundle\Service\Util\Constante;
 
 class AlertService{
 
@@ -12,25 +13,57 @@ class AlertService{
     private $latitude;
     private $longitude;
     private $profile;
-    private $contacts;
+    private $contacts=null;
+
+    private $aUserAlert;
 
     public function __construct(EntityManager $entityManager){
         $this->em = $entityManager;
     }
 
-	public function sendAlert($user) {
-
+	public function sendAlert($user){
         $location = $user->getLastLocation();
         if(!$location){
             return [
                 'success' => false,
                 'msg' => 'No se encontró su ubicacion'
             ];
-        }        
+        }
         $this->latitude = $location->getLatitude();
         $this->longitude = $location->getLongitude();
 
-        $contacts = $this->em->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId());
+        $this->profile = $this->em->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
+
+        $isUserInAlert = $user->getIsAlert();
+        if(!$isUserInAlert){
+            $this->aUserAlert = [];
+        }else{
+            $this->aUserAlert = $user->getAUserAlert();
+        }
+        
+        $respSms = $this->alertSms($user->getId());
+        $respNot = $this->InitAlertNotification($user->getId());
+
+        $lastAlert = new \DateTime();
+        $lastAlert->modify('+'.(Constante::$timeAlert).' minutes');
+
+        $user->setIsAlert(True);
+        $user->setFLastAlert($lastAlert);
+        $user->setAUserAlert($this->aUserAlert);
+        $this->em->flush();
+
+        if(!$respSms['success'] && !$respNot['success'])
+            return $respNot;
+
+        if(!$isUserInAlert){
+            proc_open ('php ../bin/console app:Notification_EndAlert '.$user->getId().' >> alert.log', Array (), $foo);
+        }
+
+        return ['success' => true];
+    }
+
+    public function alertSms($uId,$sendSms=True){
+        $contacts = $this->em->getRepository('EntityBundle:User\Contact')->findOneByUser($uId);
         if(!$contacts){
             return [
                 'success' => false,
@@ -38,46 +71,31 @@ class AlertService{
             ];
         }
 
-        $this->contacts = $contacts->getAContact();
-        if(count($this->contacts)==0){
+        $contacts = $contacts->getAContact();
+        if(count($contacts)==0){
             return [
                 'success' => false,
                 'msg' => 'No tiene ningun contacto'
             ];
         }
+        $this->contacts = $contacts;
 
-        $this->profile = $this->em->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
+        if($sendSms){
+            $sms = new Sms($this->em);
 
-        $resp = $this->alertNotification($user->getId());
-        if(!$resp['success']){
-            $msg = $resp['msg'];
-        }
-
-        $resp = $this->alertSms();
-        if(!$resp['success'] && isset($msg)){
-            return [
-                'success' => false,
-                'msg' => $msg
-            ];
-        }
-        return ['success' => true];           
-    }
-
-    public function alertSms(){
-        $sms = new Sms($this->em);
-
-        $text = "help me!!\n";
-        $text .= ("I am ".$this->profile->getNombres()." ".$this->profile->getApepat()."\n");
-        $text .= ("http://maps.google.com/?q=".$this->latitude.",".$this->longitude);        
-        foreach($this->contacts as $contact){
-            $resp = $sms->send($contact['number'],$contact['name']." ".$text);
-            if(!$resp['success'])
-                return $resp;
-        }
+            $text = "help me!!\n";
+            $text .= ("I am ".$this->profile->getNombres()." ".$this->profile->getApepat()."\n");
+            $text .= ("http://maps.google.com/?q=".$this->latitude.",".$this->longitude);        
+            foreach($this->contacts as $contact){
+                $resp = $sms->send($contact['number'],$contact['name']." ".$text);
+                if(!$resp['success'])
+                    return $resp;
+            }
+        }        
         return ['success'=>true];
     }
 
-    public function alertNotification($uId){
+    public function InitAlertNotification($uId){
         $users = $this->getNearUsers($this->latitude,$this->longitude,$uId);
         if(!is_array($users) || count($users)==0){
             return [
@@ -87,12 +105,12 @@ class AlertService{
         }
 
         $ids=[];
-        foreach ($users as $user) {
+        foreach ($users as $user)
             $ids[]=$user['id'];
-        }
+        $this->aUserAlert = array_values(array_unique(array_merge($this->aUserAlert,$ids)));
 
         $msg = [
-                'type'=>'alert',
+                'type'=>'alert_init',
                 'user'=>[
                     'id'=>$uId,
                     'username'=>$this->profile->getUser()->getUsername(),
@@ -107,18 +125,66 @@ class AlertService{
         ];
 
         $socket = new Socket($this->em);
-        return $socket->send(['ids'=>$ids,'msg'=>$msg]);
+        return $socket->send(['ids'=>$this->aUserAlert,'msg'=>$msg]);
     }
 
     public function getNearUsers($latitude,$longitude,$uId){
+        if( !is_null($this->contacts) ){
+            $aUsername = [];
+            foreach($this->contacts as $contact){
+                $aUsername[]=$contact['number'];
+            }
+        }
         $point = new \EntityBundle\Model\Object\Point($latitude,$longitude);
 
-        $consulta= 'SELECT E.id, DISTANCE(E.lastLocation ,POINT_STR(\''.$point.'\')) AS distance_m
+        $consulta = 'SELECT E.id, E.username, DISTANCE(E.lastLocation ,POINT_STR(\''.$point.'\')) AS distance_m
                 FROM EntityBundle:User\User E
                 WHERE E.id<>'.$uId.'
                 HAVING distance_m < 2000';
+
+        if(isset($aUsername)){
+            $consulta .= 'OR E.username IN ('.implode(',', $aUsername).')';
+        }
+
         $query = $this->em->createQuery($consulta);
 
         return $query->getResult();
+    }
+
+    public function UpdateAlertNotification($user){
+
+        $location = $user->getLastLocation();
+        $latitude = $location->getLatitude();
+        $longitude = $location->getLongitude();
+
+        $profile = $this->em->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
+
+        $msg = [
+                'type'=>'alert_update',
+                'user'=>[
+                    'id'=>$user->getId(),
+                    'username'=>$profile->getUser()->getUsername(),
+                    'nombres'=>$profile->getNombres(),
+                    'apePat'=>$profile->getApepat(),
+                    'apeMat'=>$profile->getApemat(),
+                    'location'=>[
+                        'latitude'=>$latitude,
+                        'longitude'=>$longitude
+                    ]
+                ]
+        ];
+
+        $socket = new Socket($this->em);
+        return $socket->send(['ids'=>$user->getAUserAlert(),'msg'=>$msg]);
+    }
+
+    public function EndAlertNotification($uId,$ids){        
+        $msg = [
+                'type'=>'alert_end',
+                'id'=>(int)$uId
+        ];
+
+        $socket = new Socket($this->em);
+        return $socket->send(['ids'=>$ids,'msg'=>$msg]);
     }
 }

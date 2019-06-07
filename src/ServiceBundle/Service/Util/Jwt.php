@@ -18,6 +18,7 @@ class Jwt
 	public function getToken($usuario){
 
         $token = [
+            "i" => "user",
             "id" => $usuario->getId(),
             "username" => $usuario->getUsername(),
             "iat" => time(),

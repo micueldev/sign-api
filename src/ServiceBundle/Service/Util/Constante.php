@@ -7,6 +7,9 @@ class Constante {
     public static $name;
     public static $codConfig;
 
+    public static $distanceAlert;
+    public static $timeAlert;
+
     public static $enumAceptado;
     public static $enumEmpty;    
     public static $enumParam;
@@ -21,6 +24,9 @@ class Constante {
 
         self::$name ='VITAL SIGN'; //Nombre del projecto
         self::$codConfig ='VITSIGN'; //Codigo de configuracion
+
+        self::$timeAlert = 1; //tiempo que dura una alerta en minutos
+        self::$distanceAlert = 2000; //distancia en metros para de usuarios cerca de la alerta
 
         self::$enumAceptado = '202'; //Aceptado, pero el procesamiento no se ha completado
         self::$enumEmpty = '204'; //Se procesó correctamente la solicitud y no devuelve ningún contenido

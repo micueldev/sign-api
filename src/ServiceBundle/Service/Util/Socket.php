@@ -27,6 +27,10 @@ class Socket
             if(count($this->parameter)<2){
                 return ['success'=>true,'msg'=>'No existe configuracion de la plataforma'];
             }
+
+            if( !isset($body['i']) ){
+                $body['i']='user';
+            }
             
             $conexion = $this->em->getRepository('EntityBundle:Config\Socket')->findOneByCod(Constante::$codConfig);
             if( $conexion && $conexion->getDomain() ){

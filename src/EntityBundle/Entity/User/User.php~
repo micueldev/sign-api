@@ -40,6 +40,20 @@ class User
      */
     private $lastLocation;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAlert=FALSE;
+
+    /**
+    * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $fLastAlert;
+
+    /**
+    * @ORM\Column(type="json_array")
+    */
+    private $aUserAlert=[];  //Usuarios a los que va alertando
 
     public function asArray($filtro=NULL){
 
@@ -48,6 +62,8 @@ class User
             'username' => $this->username,
             'isActive' => $this->isActive,
             //'lastLocation'=>$this->lastLocation,
+            //'isAlert'=>$this->isAlert,
+            //'fLastAlert'=>$this->fLastAlert,
         ];
 
         if($filtro){
@@ -55,111 +71,5 @@ class User
         }
 
         return $response;
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set username.
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Get username.
-     *
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * Set password.
-     *
-     * @param string $password
-     *
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Get password.
-     *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Set isActive.
-     *
-     * @param bool $isActive
-     *
-     * @return User
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive.
-     *
-     * @return bool
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * Set lastLocation.
-     *
-     * @param point|null $lastLocation
-     *
-     * @return User
-     */
-    public function setLastLocation($lastLocation = null)
-    {
-        $this->lastLocation = $lastLocation;
-
-        return $this;
-    }
-
-    /**
-     * Get lastLocation.
-     *
-     * @return point|null
-     */
-    public function getLastLocation()
-    {
-        return $this->lastLocation;
     }
 }

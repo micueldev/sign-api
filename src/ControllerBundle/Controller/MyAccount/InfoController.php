@@ -51,6 +51,11 @@ class InfoController extends Controller
 
             $user->setLastLocation(new Point($latitude, $longitude));
             $this->getDoctrine()->getManager()->flush();
+            
+            if($user->getIsAlert()){
+                $resp = $this->get('UserAlert')->UpdateAlertNotification($user);
+                return $this->json($resp);
+            }
 
             return $this->json([
                 'success' => true

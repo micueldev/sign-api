@@ -42,4 +42,62 @@ class Socket
 
         return $response;
     }
+
+    /**
+     * Get id.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set cod.
+     *
+     * @param string $cod
+     *
+     * @return Socket
+     */
+    public function setCod($cod)
+    {
+        $this->cod = $cod;
+
+        return $this;
+    }
+
+    /**
+     * Get cod.
+     *
+     * @return string
+     */
+    public function getCod()
+    {
+        return $this->cod;
+    }
+
+    /**
+     * Set domain.
+     *
+     * @param string $domain
+     *
+     * @return Socket
+     */
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * Get domain.
+     *
+     * @return string
+     */
+    public function getDomain()
+    {
+        return $this->domain;
+    }
 }
