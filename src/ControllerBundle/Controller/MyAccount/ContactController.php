@@ -14,12 +14,9 @@ class ContactController extends Controller
             if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
             $user = $decoded['user'];
 
-            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 
-            if(!$contacts){
-                $aContact = []; 
-            }else{
-                $aContact = $contacts->getAContact();
-            }
+            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId());
+
+            $aContact = !$contacts ? [] : $contacts->getAContact();
 
             return  $this->json(['success'=>true,'entidad'=>$aContact]);
 
@@ -38,19 +35,17 @@ class ContactController extends Controller
             $user = $decoded['user'];
 
             $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 
-            if(!$contacts){
-                $aContact = []; 
-            }else{
-                $aContact = $contacts->getAContact();
-            }
 
-            foreach($aContact as $i=>$contact){
+            $aContact = !$contacts ? [] : $contacts->getAContact();
+
+            foreach($aContact as $contact){
                 if( $id>$contact['id'] )
                     continue;
                 else if( $id==$contact['id'] )
-                    $readContact = $aContact[$i];
+                    $readContact = $contact;
                 break;
             }
+
             if( !isset($readContact) ) 
                 return $this->json(['success'=>false,'msg'=>'elemento no encontrado'],Constante::$enumCodigo);
 
@@ -73,17 +68,15 @@ class ContactController extends Controller
             $cadena = 'name,number';
             $sentencia = $this->get('Read')->getData($cadena);
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
-            $resp = $this->get('Util')->validateMobilNumber($number);
-            if(!$resp['success']){
+            $resp = $this->get('Util')->validateMobileNumber($number);
+            if(!$resp['success'])
                 return  $this->json($resp);
-            }
 
             $begin;
             $this->getDoctrine()->getConnection()->beginTransaction();
@@ -98,12 +91,7 @@ class ContactController extends Controller
   
             $aContact = $contacts->getAContact();
 
-            if(count($aContact)==0){
-                $id=1;
-            }else {
-                $contacto = end($aContact);
-                $id = $contacto['id']+1;
-            }
+            $id = count($aContact)>0 ? end($aContact)['id']+1 : 1;
 
             $aContact[] = ['id'=>$id,'name'=>$name,'number'=>$number];
 
@@ -118,9 +106,8 @@ class ContactController extends Controller
             return  $this->json(['success'=>true,'id'=>$id]);
 
         }catch (\Exception $e){
-            if( isset($begin) ){
-                $this->getDoctrine()->getConnection()->rollBack();    
-            }
+            if( isset($begin) )
+                $this->getDoctrine()->getConnection()->rollBack();
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
@@ -137,36 +124,29 @@ class ContactController extends Controller
             $cadena = 'name,number';
             $sentencia = $this->get('Read')->getData($cadena);
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
-            $resp = $this->get('Util')->validateMobilNumber($number);
-            if(!$resp['success']){
+            $resp = $this->get('Util')->validateMobileNumber($number);
+            if(!$resp['success'])
                 return  $this->json($resp);
-            }
 
-            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 
-            if(!$contacts){
-                $aContact = []; 
-            }else{
-                $aContact = $contacts->getAContact();
-            }
+            $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId());
+            $aContact = !$contacts ? [] : $contacts->getAContact();
 
-            foreach($aContact as $i=>$contact){
-                if( $id>$contact['id'] ){
+            foreach($aContact as &$contact){
+                if( $id>$contact['id'] )
                     continue;
-                } else if( $id==$contact['id'] ){
+                else if( $id==$contact['id'] ){
                     $editContact = ['id'=>$id,'name'=>$name,'number'=>$number];
-                    $aContact[$i] = $editContact;
-                    $aContact = array_values($aContact);
+                    $contact = $editContact;
                 }
                 break;
             }
-            if( !isset($editContact) ) 
+            if( !isset($editContact) )
                 return $this->json(['success'=>false,'msg'=>'elemento no encontrado'],Constante::$enumCodigo);
 
             $begin;
@@ -183,9 +163,8 @@ class ContactController extends Controller
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
-            if( isset($begin) ){
-                $this->getDoctrine()->getConnection()->rollBack();    
-            }
+            if( isset($begin) )
+                $this->getDoctrine()->getConnection()->rollBack();
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
@@ -200,13 +179,12 @@ class ContactController extends Controller
             $user = $decoded['user'];
 
             $contacts = $this->getDoctrine()->getRepository('EntityBundle:User\Contact')->findOneByUser($user->getId()); 
-            if(!$contacts) $aContact = []; 
-            else $aContact = $contacts->getAContact();
+            $aContact = !$contacts ? [] : $contacts->getAContact();
 
             foreach ($aContact as $i => $contact) {
-                if( $id>$contact['id'] ){
+                if( $id>$contact['id'] )
                     continue;
-                } else if( $id==$contact['id'] ){
+                else if( $id==$contact['id'] ){
                     $delete=true;
                     unset($aContact[$i]);
                     $aContact = array_values($aContact);
@@ -230,9 +208,8 @@ class ContactController extends Controller
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
-            if( isset($begin) ){
+            if( isset($begin) )
                 $this->getDoctrine()->getConnection()->rollBack();    
-            }
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()

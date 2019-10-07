@@ -36,18 +36,21 @@ class EndAlertCommand extends ContainerAwareCommand
             
             while(True){
                 $em = $this->getContainer()->get('doctrine')->getEntityManager();
-                $user = $em->getRepository('EntityBundle:User\User')->findOneById($idUser);
-                if(!$user){
-                    die();
-                }
-                $em->refresh($user);
-                $timeEnd = $user->getFLastAlert()->getTimestamp(); //Tiempo real donde debe terminar la alerta
+
+                $alert = $em->getRepository('EntityBundle:Item\Alert')->findOneBy(['user'=>$idUser,'isActive'=>True]);
+                $alert ? : die();
+
+                $em->refresh($alert);
+                $timeEnd = $alert->getFT()->getTimestamp(); //Tiempo real donde debe terminar la alerta
                 $timeSleep = $timeEnd-date_create()->getTimestamp();
                 if($timeSleep>0){
-                    unset($user);
+                    unset($alert);
                     unset($em);                    
                     sleep($timeSleep); //dormimos por el tiempo restante que debe acabar la alerta
                 }else{
+                    $alert->setIsActive(False);
+
+                    $user = $em->getRepository('EntityBundle:User\User')->findOneById($idUser);
                     $user->setIsAlert(False);
                     $em->flush();
                     $alertService = new AlertService($em);

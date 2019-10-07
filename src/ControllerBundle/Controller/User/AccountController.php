@@ -14,12 +14,11 @@ class AccountController extends Controller
             $cadena = 'username,password';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return $this->json([
                                         'success'=>false,
                                         'msg'=>'No se encontro al parametro ('.$faltante.')'
                                         ],Constante::$enumParam);
-            }
 
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
             if($user && password_verify($password,$user->getPassword()) ){
@@ -27,7 +26,7 @@ class AccountController extends Controller
                     $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
                     return $this->json([
                         'success' => true,
-                        'authToken' => $this->get('Jwt')->getToken($user,'a'),
+                        'authToken' => $this->get('Jwt')->getToken($user),
                         'profile' => $profile->asArray(FALSE,['apepat','nombres'])
                     ]);                    
                 }
@@ -51,17 +50,15 @@ class AccountController extends Controller
             $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
-            $exist = false;
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
-            if($user) $exist = true;
-            
+
+            $exist = $user ? true : false;
             return  $this->json(['success'=>true,'exist'=>$exist]);
 
         }catch (\Exception $e){
@@ -78,22 +75,21 @@ class AccountController extends Controller
             $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username);
-            if($user){
+            if($user)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Usuario registrado'
                                         ],Constante::$enumNotExis);
-            }
 
             $this->get('UserAccount')->sendCode($username);
+            
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
@@ -110,27 +106,25 @@ class AccountController extends Controller
             $cadena = 'username,code';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
             $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
-            if(!$uCode){
+            if(!$uCode)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS invalid'
                                         ],Constante::$enumNotExis);
-            }
 
-            if( $code!=$uCode->getCode() ){
+            if( $code!=$uCode->getCode() )
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS incorrect'
                                         ],Constante::$enumNotExis);
-            }
+
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
@@ -147,43 +141,38 @@ class AccountController extends Controller
             $cadena = 'username,code,password,email,apepat,apemat,nombres';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
             $oUser = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
-            if($oUser){
+            if($oUser)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'El numero de telefono ya esta siendo usado'
                                         ],Constante::$enumNotExis);
-            }
             /*
             $oUser = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByEmail($email);
-            if($oUser){
+            if($oUser)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'El email ya esta siendo usado.'
                                         ],Constante::$enumCodigo);
-            }
             */
             $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
-            if(!$uCode){
+            if(!$uCode)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS invalid'
                                         ],Constante::$enumNotExis);
-            }
 
-            if( $code!=$uCode->getCode() ){
+            if( $code!=$uCode->getCode() )
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS incorrect'
                                         ],Constante::$enumNotExis);
-            }
 
             $begin;
             $this->getDoctrine()->getConnection()->beginTransaction();
@@ -211,9 +200,8 @@ class AccountController extends Controller
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
-            if( isset($begin) ){
+            if( isset($begin) )
                 $this->getDoctrine()->getConnection()->rollBack();    
-            }
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()
@@ -227,20 +215,18 @@ class AccountController extends Controller
             $cadena = 'username';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
-            if(!$user){
+            if(!$user)
                 return  $this->json([
                                         'success'=>false,
                                         'msg'=>'Usuario no registrado'
                                         ],Constante::$enumNotExis);
-            }
 
             $resp = $this->get('UserAccount')->sendCode($username);
             return $this->json($resp);
@@ -259,35 +245,31 @@ class AccountController extends Controller
             $cadena = 'username,code,password';
             $sentencia = $this->get('Read')->getData($cadena);  
             eval($sentencia);
-            if(!$existen){
+            if(!$existen)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'faltan parametros'
                                         ],Constante::$enumPerm);
-            }
 
             $user = $this->getDoctrine()->getRepository('EntityBundle:User\User')->findOneByUsername($username); 
-            if(!$user){
+            if(!$user)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'El numero de telefono no esta registrado'
                                         ],Constante::$enumNotExis);
-            }
 
             $uCode = $this->getDoctrine()->getRepository('EntityBundle:User\Code')->findOneByUsername($username); 
-            if(!$uCode){
+            if(!$uCode)
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS invalid'
                                         ],Constante::$enumNotExis);
-            }
 
-            if( $code!=$uCode->getCode() ){
+            if( $code!=$uCode->getCode() )
                 return  $this->json ([
                                         'success'=>false,
                                         'msg'=>'Code SMS incorrect'
                                         ],Constante::$enumNotExis);
-            }
 
             $begin;
             $this->getDoctrine()->getConnection()->beginTransaction();
@@ -295,17 +277,15 @@ class AccountController extends Controller
             $cadena = 'username^'.$username;
             $cadena.= '|password^'.password_hash($password,PASSWORD_DEFAULT);
             $user = $this->get('Update')->upEntity('User\User',['id'=>$user->getId(),'cadena'=>$cadena]);
-            if(!$user['success']){
+            if(!$user['success'])
                 return  $this->json($nUser,Constante::$enumCodigo);
-            }
 
             $this->getDoctrine()->getConnection()->commit();
             return  $this->json(['success'=>true]);
 
         }catch (\Exception $e){
-            if( isset($begin) ){
-                $this->getDoctrine()->getConnection()->rollBack();    
-            }
+            if( isset($begin) )
+                $this->getDoctrine()->getConnection()->rollBack();
             return $this->json([
                                     'success'=>false,
                                     'msg'=>$e->getMessage()

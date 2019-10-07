@@ -21,16 +21,12 @@ class Socket
         }
     }
 
-	public function send($body)
-    {   
+	public function send($body){ 
         try{
-            if(count($this->parameter)<2){
+            if(count($this->parameter)<2)
                 return ['success'=>true,'msg'=>'No existe configuracion de la plataforma'];
-            }
 
-            if( !isset($body['i']) ){
-                $body['i']='user';
-            }
+            isset($body['i']) ? : $body['i']='user';
             
             $conexion = $this->em->getRepository('EntityBundle:Config\Socket')->findOneByCod(Constante::$codConfig);
             if( $conexion && $conexion->getDomain() ){
@@ -40,19 +36,18 @@ class Socket
                 $response = $client->request('POST',$ruta,[
                                                 'http_errors' => false,
                                                 'headers' => [
-                                                                'Content-Type' => 'application/json',
+                                                                'Content-Type' => 'application/json'
                                                             ],
                                                 'body' => json_encode(array_merge($body,$this->parameter))
                                         ]);
 
                 $statuscode = $response->getStatusCode();
-                if($statuscode == 200){
+                if($statuscode == 200)
                     return ['success'=>true,'msg'=>'Exito en el envio de socket'];
-                }
-                else{
+                else
                     return ['success'=>false,'msg'=>'Error status code ('.$statuscode.').'];
-                }
             }
+            return ['success'=>false,'msg'=>'No existe configuracion de los sockets'];
 
         }catch (\Exception $e){
             return [

@@ -21,7 +21,7 @@ class Sms
     /**
      * @ORM\Column(type="string", length=20)
      */
-    private $cod; //codigo configuracion
+    private $cod;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -42,6 +42,8 @@ class Sms
     public function asArray($filtro=NULL){
 
         $response = [
+            //'id' => $this->id,
+            //'cod' => $this->cod,
             'host' => $this->host,
             'port' => $this->port,
             'hash' => $this->hash
@@ -55,9 +57,9 @@ class Sms
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -65,7 +67,7 @@ class Sms
     }
 
     /**
-     * Set cod
+     * Set cod.
      *
      * @param string $cod
      *
@@ -79,7 +81,7 @@ class Sms
     }
 
     /**
-     * Get cod
+     * Get cod.
      *
      * @return string
      */
@@ -89,7 +91,7 @@ class Sms
     }
 
     /**
-     * Set host
+     * Set host.
      *
      * @param string $host
      *
@@ -103,7 +105,7 @@ class Sms
     }
 
     /**
-     * Get host
+     * Get host.
      *
      * @return string
      */
@@ -113,7 +115,7 @@ class Sms
     }
 
     /**
-     * Set port
+     * Set port.
      *
      * @param string $port
      *
@@ -127,7 +129,7 @@ class Sms
     }
 
     /**
-     * Get port
+     * Get port.
      *
      * @return string
      */
@@ -137,13 +139,13 @@ class Sms
     }
 
     /**
-     * Set hash
+     * Set hash.
      *
-     * @param string $hash
+     * @param string|null $hash
      *
      * @return Sms
      */
-    public function setHash($hash)
+    public function setHash($hash = null)
     {
         $this->hash = $hash;
 
@@ -151,9 +153,9 @@ class Sms
     }
 
     /**
-     * Get hash
+     * Get hash.
      *
-     * @return string
+     * @return string|null
      */
     public function getHash()
     {

@@ -32,6 +32,7 @@ class Code
     * @ORM\Column(type="datetime")
      */
     private $f;
+    
 
     public function asArray($filtro=NULL){
 
@@ -50,9 +51,9 @@ class Code
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -60,7 +61,7 @@ class Code
     }
 
     /**
-     * Set username
+     * Set username.
      *
      * @param string $username
      *
@@ -74,7 +75,7 @@ class Code
     }
 
     /**
-     * Get username
+     * Get username.
      *
      * @return string
      */
@@ -84,7 +85,7 @@ class Code
     }
 
     /**
-     * Set code
+     * Set code.
      *
      * @param string $code
      *
@@ -98,7 +99,7 @@ class Code
     }
 
     /**
-     * Get code
+     * Get code.
      *
      * @return string
      */
@@ -108,7 +109,7 @@ class Code
     }
 
     /**
-     * Set f
+     * Set f.
      *
      * @param \DateTime $f
      *
@@ -122,7 +123,7 @@ class Code
     }
 
     /**
-     * Get f
+     * Get f.
      *
      * @return \DateTime
      */

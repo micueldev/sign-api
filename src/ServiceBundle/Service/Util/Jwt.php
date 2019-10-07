@@ -37,17 +37,14 @@ class Jwt
     public function decodeToken($token,$objeto=TRUE){
 
         try{
-            $array = (array) firejwt::decode($token, $this->key, array('HS256'));
-            if(!$objeto){
+            $array = (array) firejwt::decode($token, $this->key, ['HS256']);
+            if(!$objeto)
                 return ['success'=>TRUE,'user'=>$array];
-            }
 
-            $user = $this->em->getRepository('EntityBundle:User\User')->findOneById($array['id']);
-                      
+            $user = $this->em->getRepository('EntityBundle:User\User')->findOneById($array['id']);                      
             if( $user ){
-                if( $user->getIsActive() ){
+                if( $user->getIsActive() )
                     return ['success'=>TRUE,'user'=>$user];
-                }
                 return ['success'=>FALSE,'msg'=>'¡Usuario inactivo!'];
             }
             return ['success'=>FALSE,'msg'=>'logout'];               

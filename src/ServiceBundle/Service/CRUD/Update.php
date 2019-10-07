@@ -14,7 +14,7 @@ class Update
 
     public function upEntity($entidad,$data,$entity=TRUE,$flush=TRUE){
 
-        //try{
+        try{
             $cadena = explode('|',$data['cadena']);
 
             $campos = []; // array donde se guardan el nombre de los campos a modificar por el post
@@ -69,9 +69,7 @@ class Update
                 $search = $data['search'];
             }
             $search[0] = ucwords($search[0]);
-            /*
-            echo('$entidad = $this->em->getRepository(\'GodivisaEntityBundle:'.$entidad.'\')->findOneBy'.$search.'($data["id"]);');
-            die();*/
+
             eval('$entidad = $this->em->getRepository(\'EntityBundle:'.$entidad.'\')->findOneBy'.$search.'($data["id"]);');
             if($entidad){
                 foreach ($parametros as $i => $parametro) { 
@@ -123,12 +121,12 @@ class Update
                     'msg'=>'elemento no encontrado: ' . $data['cadena']
                     ];
             }
-        /*
+
         }catch (\Exception $e){
             return [
                     'success'=>false,
                     'msg'=>$e->getMessage()
                     ];
-        }*/
+        }
     }
 }

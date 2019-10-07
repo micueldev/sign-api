@@ -48,9 +48,9 @@ class Contact
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -58,7 +58,7 @@ class Contact
     }
 
     /**
-     * Set aContact
+     * Set aContact.
      *
      * @param array $aContact
      *
@@ -72,7 +72,7 @@ class Contact
     }
 
     /**
-     * Get aContact
+     * Get aContact.
      *
      * @return array
      */
@@ -82,7 +82,7 @@ class Contact
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param \EntityBundle\Entity\User\User $user
      *
@@ -96,7 +96,7 @@ class Contact
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return \EntityBundle\Entity\User\User
      */

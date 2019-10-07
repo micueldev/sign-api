@@ -56,9 +56,9 @@ class Profile
 
         return $response;
     }
- 
+
     /**
-     * Set apepat
+     * Set apepat.
      *
      * @param string $apepat
      *
@@ -72,7 +72,7 @@ class Profile
     }
 
     /**
-     * Get apepat
+     * Get apepat.
      *
      * @return string
      */
@@ -82,13 +82,13 @@ class Profile
     }
 
     /**
-     * Set apemat
+     * Set apemat.
      *
-     * @param string $apemat
+     * @param string|null $apemat
      *
      * @return Profile
      */
-    public function setApemat($apemat)
+    public function setApemat($apemat = null)
     {
         $this->apemat = $apemat;
 
@@ -96,9 +96,9 @@ class Profile
     }
 
     /**
-     * Get apemat
+     * Get apemat.
      *
-     * @return string
+     * @return string|null
      */
     public function getApemat()
     {
@@ -106,7 +106,7 @@ class Profile
     }
 
     /**
-     * Set nombres
+     * Set nombres.
      *
      * @param string $nombres
      *
@@ -120,7 +120,7 @@ class Profile
     }
 
     /**
-     * Get nombres
+     * Get nombres.
      *
      * @return string
      */
@@ -130,13 +130,13 @@ class Profile
     }
 
     /**
-     * Set email
+     * Set email.
      *
-     * @param string $email
+     * @param string|null $email
      *
      * @return Profile
      */
-    public function setEmail($email)
+    public function setEmail($email = null)
     {
         $this->email = $email;
 
@@ -144,9 +144,9 @@ class Profile
     }
 
     /**
-     * Get email
+     * Get email.
      *
-     * @return string
+     * @return string|null
      */
     public function getEmail()
     {
@@ -154,7 +154,7 @@ class Profile
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param \EntityBundle\Entity\User\User $user
      *
@@ -168,7 +168,7 @@ class Profile
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return \EntityBundle\Entity\User\User
      */

@@ -27,6 +27,7 @@ class Socket
      * @ORM\Column(type="string", length=100)
      */
     private $domain;
+    
 
     public function asArray($filtro=NULL){
 

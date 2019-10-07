@@ -25,9 +25,8 @@ class AccountService{
         $f = date('Y-m-d h:i:s A');
 
         $uCode = $this->em->getRepository('EntityBundle:User\Code')->findOneByUsername($username);
-        if($uCode){
+        if($uCode)
             $id=$uCode->getId();
-        }
 
         $cadena = 'code^'.$code;
         $cadena.= '|f^'.$f;

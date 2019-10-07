@@ -20,7 +20,7 @@ class InfoController extends Controller
             $profile = $this->getDoctrine()->getRepository('EntityBundle:User\Profile')->findOneByUser($user->getId());
             return $this->json([
                 'success' => true,
-                'authToken' => $this->get('Jwt')->getToken($user,'a'),
+                'authToken' => $this->get('Jwt')->getToken($user),
                 'profile' => $profile->asArray(FALSE,['apepat','nombres'])
             ]);  
             
@@ -39,7 +39,7 @@ class InfoController extends Controller
             if(!$decoded['success']) return $this->json($decoded,Constante::$enumTock);
             $user = $decoded['user'];
 
-            $cadena = 'latitude,longitude';
+            $cadena = 'latitude,longitude,accuracy';
             $sentencia = $this->get('Read')->getData($cadena,'PATCH');  
             eval($sentencia);
             if(!$existen){
@@ -50,13 +50,14 @@ class InfoController extends Controller
             }
 
             $user->setLastLocation(new Point($latitude, $longitude));
+            $user->setAccuracy($accuracy);
             $this->getDoctrine()->getManager()->flush();
-            
+
             if($user->getIsAlert()){
-                $resp = $this->get('UserAlert')->UpdateAlertNotification($user);
+                $resp = $this->get('UserAlert')->UpdateAlertLocation($user);
                 return $this->json($resp);
             }
-
+            
             return $this->json([
                 'success' => true
             ]);
