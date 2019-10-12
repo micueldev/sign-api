@@ -54,7 +54,7 @@ class EndAlertCommand extends ContainerAwareCommand
                     $user->setIsAlert(False);
                     $em->flush();
                     $alertService = new AlertService($em);
-                    $alertService->EndAlertNotification($idUser,$user->getAUserAlert());
+                    $alertService->EndAlertNotification($idUser,$alert->getAUserAlert());
                     die();
                 }
             }
